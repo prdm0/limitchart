@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: c(
   person("Pedro Rafael", "D. Marinho", , "pedro.rafael.marinho@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-1591-8300")),
-  person("Luiz Medeiros", "A. L. Filho", , "luizmalf@gmail.com", role = c("aut"),
+  person("Luiz Medeiros", "A. L. Filho", , "luiz@de.ufpb.br", role = c("aut"),
            comment = c(ORCID = "YOUR-ORCID-ID")),
   person("Letícia", "G. C. Costa", , "first.last@example.com", role = c("aut"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
