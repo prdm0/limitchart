@@ -3,7 +3,7 @@
 #' @export
 pdf_simplex <- function(x, mu, sigma2){
 
-  stopifnot(mu > 0, mu < 1)
+  stopifnot(mu > 0, mu < 1, sigma2 > 0)
 
   d <- (x - mu)^2 / (x * (1 - x) * mu^2 * (1 - mu)^2)
 
@@ -11,6 +11,7 @@ pdf_simplex <- function(x, mu, sigma2){
 }
 # integrate(f = pdf_simplex, lower = 0, upper = 1, mu = 0.5, sigma2 = 1.2)
 
+#' @export
 pdf_beta <- function(x, mu, phi){
 
   stopifnot(mu > 0, mu < 1)
@@ -19,6 +20,17 @@ pdf_beta <- function(x, mu, phi){
 }
 
 # integrate(f = pdf_beta, lower = 0, upper = 1, mu = 0.5, phi = 1.2)
+
+#' @export
+pdf_gamma_u <- function(x, mu, tau) {
+
+  stopifnot(mu > 0, mu < 1, tau > 0)
+
+  d <- (mu^(1/tau) / (1 - mu^(1/tau)))^(tau)
+  d^tau / gamma(tau) * x^(d - 1) * log(1/x)^(tau - 1)
+}
+
+# integrate(f = pdf_gamma_u, lower = 0, upper = 1, mu = 0.5, tau = 1.2)
 
 # Acceptance and rejection method for generating pseudo-random numbers from any
 # distribution in the interval (0, 1).
@@ -57,13 +69,19 @@ acceptance_rejection <- function(n = 1L, pdf,...){
 }
 
 # Example (Simplex)
-acceptance_rejection(n = 1e3L, pdf = pdf_simplex, mu = 0.2, sigma2 = 0.2) |> hist(prob = TRUE)
+acceptance_rejection(n = 1e3L, pdf = pdf_simplex, mu = 0.9, sigma2 = 0.9) |> hist(prob = TRUE)
 x <- seq(0, 1, length.out = 200)
-y <- pdf_simplex(x = x, mu = 0.2, sigma2 = 0.2)
+y <- pdf_simplex(x = x, mu = 0.9, sigma2 = 0.9)
 lines(x, y, type = "l")
 
 # Example (Beta)
 acceptance_rejection(n = 1e3, pdf = pdf_beta, mu = 0.2, phi = 0.2) |> hist(prob = TRUE)
 x <- seq(0, 1, length.out = 200)
 y <- pdf_beta(x = x, mu = 0.2, phi = 0.2)
+lines(x, y, type = "l")
+
+# Example (Unit Gamma)
+acceptance_rejection(n = 1e3, pdf = pdf_beta, mu = 0.2, phi = 0.2) |> hist(prob = TRUE)
+x <- seq(0, 1, length.out = 200)
+y <- pdf_gamma_u(x = x, mu = 0.2, tau = 0.2)
 lines(x, y, type = "l")
