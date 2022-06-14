@@ -1,5 +1,10 @@
-# devtools::install_github("luca-scr/qcc", build = TRUE, build_opts = c("--no-resave-data", "--no-manual"))
-# library(qcc)
+#' Simplex distribution
+#' @description Probability density function of a random variable with simplex distribution.
+#' @param x Value in the domain of the function, such that \eqn{0 < x < 1}.
+#' @param mu Lease parameter, such that \eqn{0 < \mu < 1}.
+#' @param sigma2 Dispersion parameter, such that \eqn{\sigma^2 > 0}.
+#' @examples
+#' integrate(f = pdf_simplex, lower = 0, upper = 1, mu = 0.5, sigma2 = 1.2)
 #' @export
 pdf_simplex <- function(x, mu, sigma2){
 
@@ -9,8 +14,14 @@ pdf_simplex <- function(x, mu, sigma2){
 
   (2 * pi * sigma2 * (x * (1 - x))^3)^(-1/2) * exp(-1/(2 * sigma2) * d)
 }
-# integrate(f = pdf_simplex, lower = 0, upper = 1, mu = 0.5, sigma2 = 1.2)
 
+#' Beta distribution (reparameterized)
+#' @description Probability density function of a random variable with beta distribution.
+#' @param x Value in the domain of the function, such that \eqn{0 < x < 1}.
+#' @param mu Lease parameter, such that \eqn{0 < \mu < 1}.
+#' @param psi Dispersion parameter, such that \eqn{\phi^2 > 0}.
+#' @examples
+#' integrate(f = pdf_beta, lower = 0, upper = 1, mu = 0.5, phi = 1.2)
 #' @export
 pdf_beta <- function(x, mu, phi){
 
@@ -19,8 +30,13 @@ pdf_beta <- function(x, mu, phi){
   (x^(mu * phi - 1) * (1 - x)^((1 - mu) * phi - 1)) / beta(mu * phi, (1 - mu) * phi)
 }
 
-# integrate(f = pdf_beta, lower = 0, upper = 1, mu = 0.5, phi = 1.2)
-
+#' Unit gamma distribution
+#' @description Probability density function of a random variable with unit gamma distribution.
+#' @param x Value in the domain of the function, such that \eqn{0 < x < 1}.
+#' @param mu Lease parameter, such that \eqn{0 < \mu < 1}.
+#' @param tau Dispersion parameter, such that \eqn{\tau^2 > 0}.
+#' @examples
+#' integrate(f = pdf_gamma_u, lower = 0, upper = 1, mu = 0.5, tau = 1.2)
 #' @export
 pdf_gamma_u <- function(x, mu, tau) {
 
@@ -30,10 +46,36 @@ pdf_gamma_u <- function(x, mu, tau) {
   d^tau / gamma(tau) * x^(d - 1) * log(1/x)^(tau - 1)
 }
 
-# integrate(f = pdf_gamma_u, lower = 0, upper = 1, mu = 0.5, tau = 1.2)
-
-# Acceptance and rejection method for generating pseudo-random numbers from any
-# distribution in the interval (0, 1).
+#' Acceptance and rejection method for generating pseudo-random numbers
+#' @description
+#' Acceptance and rejection method for generating pseudo-random numbers from any
+#' distribution in the interval \eqn{0 < x < 1}.
+#' @param n Number of generations to be generated.
+#' @param pdf Probability density function defined on the interval \eqn{0 < x < 1}.
+#' @param ... Probability density function parameters.
+#' @details The accept and reject method implemented by this function is
+#' intended to generate pseudo random observations of random variables in the
+#' interval \eqn{0 < x < 1}. Therefore, the passed probability density function pdf must
+#' be a function with supported defined in this range.
+#' @examples
+#' # Example (Simplex)
+#' acceptance_rejection(n = 1e3L, pdf = pdf_simplex, mu = 0.9, sigma2 = 0.9) |>
+#' hist(prob = TRUE)
+#' x <- seq(0, 1, length.out = 200)
+#' y <- pdf_simplex(x = x, mu = 0.9, sigma2 = 0.9)
+#' lines(x, y, type = "l")
+#' # Example (Beta)
+#' acceptance_rejection(n = 1e3, pdf = pdf_beta, mu = 0.2, phi = 0.2) |>
+#' hist(prob = TRUE)
+#' x <- seq(0, 1, length.out = 200)
+#' y <- pdf_beta(x = x, mu = 0.2, phi = 0.2)
+#' lines(x, y, type = "l")
+#' # Example (Unit Gamma)
+#' acceptance_rejection(n = 1e3, pdf = pdf_gamma_u, mu = 0.7, tau = 1.34) |>
+#' hist(prob = TRUE)
+#' x <- seq(0, 1, length.out = 200)
+#' y <- pdf_gamma_u(x = x, mu = 0.7, tau = 1.34)
+#' lines(x, y, type = "l")
 #' @export
 acceptance_rejection <- function(n = 1L, pdf,...){
 
@@ -67,21 +109,3 @@ acceptance_rejection <- function(n = 1L, pdf,...){
   }
   values
 }
-
-# Example (Simplex)
-acceptance_rejection(n = 1e3L, pdf = pdf_simplex, mu = 0.9, sigma2 = 0.9) |> hist(prob = TRUE)
-x <- seq(0, 1, length.out = 200)
-y <- pdf_simplex(x = x, mu = 0.9, sigma2 = 0.9)
-lines(x, y, type = "l")
-
-# Example (Beta)
-acceptance_rejection(n = 1e3, pdf = pdf_beta, mu = 0.2, phi = 0.2) |> hist(prob = TRUE)
-x <- seq(0, 1, length.out = 200)
-y <- pdf_beta(x = x, mu = 0.2, phi = 0.2)
-lines(x, y, type = "l")
-
-# Example (Unit Gamma)
-acceptance_rejection(n = 1e3, pdf = pdf_beta, mu = 0.2, phi = 0.2) |> hist(prob = TRUE)
-x <- seq(0, 1, length.out = 200)
-y <- pdf_gamma_u(x = x, mu = 0.2, tau = 0.2)
-lines(x, y, type = "l")
