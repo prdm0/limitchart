@@ -109,3 +109,30 @@ acceptance_rejection <- function(n = 1L, pdf,...){
   }
   values
 }
+
+likelihood <- function(pdf, x, ...){
+  -sum(log(pdf(x, ...)))
+}
+
+mc_limitchart <- function(N = 10L,
+                          pdf = pdf_simplex,
+                          sig = 0.0027,
+                          n = 5L,
+                          location_par = list(mu = 0.1),
+                          dispersion_par = list(sigma2 =  1.37),
+                          delta = 1) {
+
+  ARL0 <- 1/sig
+  SDRL0 <- sqrt((1 - sig)/sig^2)
+  MRL0 <- log(0.5)/log(1 - sig)
+
+  lot <- do.call(
+    acceptance_rejection,
+    c(n = n, pdf = pdf, location_par, dispersion_par)
+  )
+
+  likelihood <- function(x, ...){
+    -sum(log(pdf(x, ...)))
+  }
+
+}
